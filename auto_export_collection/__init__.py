@@ -1,3 +1,3 @@
 from anki import hooks
 
-raise Exception('HELLO WORLD JASDFADSFA')
+print('HELLO WORLD JASDFADSFA')
