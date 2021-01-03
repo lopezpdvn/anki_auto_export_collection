@@ -20,6 +20,8 @@ def get_paths():
     collection_path = mw.col.path
 
 def export_col():
+    if not collection_path or not fpath:
+        return
     col = Collection(collection_path)
     exporter = AnkiCollectionPackageExporter(col)
     exporter.includeMedia = False
