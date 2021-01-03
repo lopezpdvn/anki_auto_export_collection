@@ -16,9 +16,11 @@ def f():
 
     exporter = AnkiCollectionPackageExporter(mw.col)
     exporter.includeMedia = False
-    exporter.exportInto(fpath)
 
-    log('logged by addon after backup')
+    do_export = lambda: exporter.exportInto(fpath)
+    on_done = lambda: log('logged by addon after backup')
+
+    mw.taskman.run_in_background(do_export, on_done)
 
 #gui_hooks.backup_did_complete.append(f)
 gui_hooks.profile_will_close.append(f)
