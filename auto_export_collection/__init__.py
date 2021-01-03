@@ -1,6 +1,10 @@
 from os.path import join, normpath, dirname
+from anki import Collection
 from anki.exporting import AnkiCollectionPackageExporter
 from aqt import gui_hooks, mw
+
+fpath = None
+collection_path = None
 
 def get_export_filepath():
     config = mw.addonManager.getConfig(__name__)
@@ -10,14 +14,17 @@ def get_export_filepath():
 def log(msg):
     print('[{0}]: {1}'.format(__name__, msg))
 
-def f():
+def get_paths():
+    global fpath, collection_path
     fpath = get_export_filepath()
-    exporter = AnkiCollectionPackageExporter(mw.col)
+    collection_path = mw.col.path
+
+def export_col():
+    col = Collection(collection_path)
+    exporter = AnkiCollectionPackageExporter(col)
     exporter.includeMedia = False
-
     log('Exporting to `{0}`...'.format(fpath))
-    mw.taskman.run_in_background(
-            lambda: exporter.exportInto(fpath),
-            lambda: None)
+    exporter.exportInto(fpath)
 
-gui_hooks.profile_will_close.append(f)
+gui_hooks.profile_will_close.append(get_paths)
+gui_hooks.backup_did_complete.append(export_col)
